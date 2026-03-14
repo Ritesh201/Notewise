@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: notewise_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: notewise
+      POSTGRES_PASSWORD: notewise_secret
+      POSTGRES_DB: notewise
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notewise"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: notewise_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/notewise
+      SPRING_DATASOURCE_USERNAME: notewise
+      SPRING_DATASOURCE_PASSWORD: notewise_secret
+      JWT_SECRET: super_secret_jwt_key_must_be_at_least_256_bits_long_for_hs256
+      PORT: 4000
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://frontend
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build: ./frontend
+    container_name: notewise_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  pgdata:
