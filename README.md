@@ -8,7 +8,7 @@ A full-stack notes application with semantic AI search, built with React,Spring 
 
 ```bash
 # 1. Clone the repo
-git clone <your-repo-url>
+git clone https://github.com/Ritesh201/Notewise
 cd notewise
 
 
