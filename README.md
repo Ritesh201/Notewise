@@ -11,11 +11,9 @@ A full-stack notes application with semantic AI search, built with React,Spring 
 git clone <your-repo-url>
 cd notewise
 
-# 2. (Optional) Set your Anthropic API key for high-quality embeddings
-#    Without it, a local TF-IDF fallback is used automatically
-echo "ANTHROPIC_API_KEY=your_key_here" > .env
 
-# 3. Start everything
+
+# 2. Start everything
 docker compose up --build
 
 # Frontend → http://localhost:3000
